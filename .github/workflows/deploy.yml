@@ -2,11 +2,12 @@ name: Deploy Frontend
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
 
 jobs:
   deploy:
-    runs-on: runs-on: [self-hosted, Linux, X64]
+    runs-on: [self-hosted, Linux, X64]
 
     steps:
       - name: Checkout
@@ -29,7 +30,5 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl set image deployment/frontend-demo \
-          frontend=aurait/frontend-demo:latest
+          kubectl set image deployment/frontend-demo frontend=aurait/frontend-demo:latest
           kubectl rollout status deployment/frontend-demo
-
