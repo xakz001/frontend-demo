@@ -1,10 +1,32 @@
-name: Test Runner
+name: Deploy Frontend
 
 on:
   push:
+    branches:
+      - master
 
 jobs:
-  test:
+  deploy:
     runs-on: self-hosted
+
     steps:
-      - run: echo "RUNNER WORKS"
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+
+      - name: Build Docker image
+        run: docker build -t aurait/frontend-demo:latest .
+
+      - name: Push Docker image
+        run: docker push aurait/frontend-demo:latest
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/frontend-demo \
+            frontend=aurait/frontend-demo:latest
+          kubectl rollout status deployment/frontend-demo
