@@ -2,8 +2,7 @@ name: Deploy Frontend
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
 
 jobs:
   deploy:
@@ -20,13 +19,18 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
 
       - name: Build Docker image
-        run: docker build -t aurait/frontend-demo:latest .
+        run: |
+          docker build \
+            -t aurait/frontend-demo:${{ github.sha }} \
+            -t aurait/frontend-demo:latest .
 
       - name: Push Docker image
-        run: docker push aurait/frontend-demo:latest
+        run: |
+          docker push aurait/frontend-demo:${{ github.sha }}
+          docker push aurait/frontend-demo:latest
 
       - name: Deploy to Kubernetes
         run: |
           kubectl set image deployment/frontend-demo \
-            frontend=aurait/frontend-demo:latest
+            frontend=aurait/frontend-demo:${{ github.sha }}
           kubectl rollout status deployment/frontend-demo
