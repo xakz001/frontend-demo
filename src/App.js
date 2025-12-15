@@ -7,7 +7,7 @@ function App() {
   useEffect(() => {
     fetch("/api/time")
       .then((res) => {
-        if (!res.ok) throw new Error("Backend not reachable");
+        if (!res.ok) throw new Error("Backend not reachables");
         return res.json();
       })
       .then((json) => setData(json))
