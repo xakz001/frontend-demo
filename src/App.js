@@ -2,32 +2,32 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [data, setData] = useState(null);
-  const [err, setErr] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("/api/ping")
-      .then((r) => {
-        if (!r.ok) throw new Error("API error");
-        return r.json();
+    fetch("/api/version")
+      .then((res) => {
+        if (!res.ok) throw new Error("API error");
+        return res.json();
       })
       .then(setData)
-      .catch((e) => setErr(e.message));
+      .catch((e) => setError(e.message));
   }, []);
 
   return (
     <div style={{ padding: 40, fontFamily: "Arial" }}>
-      <h1>Frontend ⇄ Backend E2E test</h1>
+      <h1>Frontend ⇄ Backend Version</h1>
 
-      {err && <p style={{ color: "red" }}>{err}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       {data ? (
         <>
-          <p><b>From:</b> {data.from}</p>
-          <p><b>Message:</b> {data.message}</p>
-          <p><b>Timestamp:</b> {data.ts}</p>
+          <p><b>Service:</b> {data.service}</p>
+          <p><b>Version:</b> {data.version}</p>
+          <p><b>Build time:</b> {data.buildTime}</p>
         </>
       ) : (
-        !err && <p>Loading from backend...</p>
+        !error && <p>Loading version from backend...</p>
       )}
     </div>
   );
